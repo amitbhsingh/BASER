@@ -1,0 +1,110 @@
+---
+title: "KerasinR"
+author: "Amit"
+date: "7/18/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+install.packages("rmarkdown")
+```
+
+## R Markdown
+```{r}
+# Install packages
+install.packages("keras")
+library(keras)
+#install_keras()
+use_condaenv("r-tensorflow")
+install.packages("keras")
+keras::install_keras()
+install.packages("reticulate")
+library(reticulate)
+conda_install('r-tensorflow','absl-py')
+```
+```{r}
+#importing data from desktop I find this technique to be really helpful for example when you are trying to locate file from your computer no there are many techniques file.choose lets you browse the files from your computer but I recently discovered a new technique which will come handy for a lot of people when start ~ (tilda) is your home directory after tilda press ~/ and tab lets you select folder so you can select folder's and files 
+
+data<-read.csv(file = "~/Desktop/GIT/project/card.csv",header = T)
+View(data)
+#Description of the dataset https://archive.ics.uci.edu/ml/datasets/cardiotocography#
+
+data<-data[-1,]
+#we have 21 independent variables which and the 22nd variable is NSP which is dependent variable 
+#Change to matrix
+data<-as.matrix(data)
+dimnames(data)<-NULL
+
+str(data)
+```
+
+```{r}
+
+#Normalize 
+data(,1:21)<-normalize(data[,1:21])
+data(,1:21)<-normalize(data[,1:21])
+data[,22]<-as.numeric(data[,22])-1
+summary(data)
+```
+
+```{r}
+#data partition
+set.seed(1234)
+ind<-sample(2,nrow(data),replace = T,prob = c(0.7,0.3))
+training<-data[ind=1,1:21]
+test<-data[ind==2,1:21]
+trainingtarget<-data[ind==1,22]
+testtarget<-data[ind==2,22]
+```
+
+```{r}
+dataset_mnist()
+#one hot encoding
+trainlabels<-to_categorical(trainingtarget)
+testlabels<-to_categorical(testtarget)
+```
+```{r}
+# create sequential model
+model<-keras_model_sequential()
+#pipe takes information from left 
+model %>%
+   layer_dense(units=8,activation='relu',input_shape=c(21))%>%
+   layer_dense(units=3,activation='softmax')
+summary(model)   
+```
+
+```{r}
+#compile
+model %>%
+   compile(loss='categorical_crossentropy',
+           optimizer='adam',
+           metrics='accuracy')
+```
+```{r}
+#fit model
+history<-model%>%
+   fit(training,
+       trainlabels,
+       epoch=200,
+       batch_size=32,
+       validation_split=0.2)
+```
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
