@@ -1,3 +1,268 @@
 I have posted my project on rpubs, In this project I was successfully able to classify and predict the mage
 correctly 
 http://rpubs.com/amitbhsingh/406342
+#installing EBImage package 
+source("https://bioconductor.org/biocLite.R")
+## Bioconductor version 3.6 (BiocInstaller 1.28.0), ?biocLite for help
+## A new version of Bioconductor is available after installing the most
+##   recent version of R; see http://bioconductor.org/install
+biocLite("EBImage")
+## BioC_mirror: https://bioconductor.org
+## Using Bioconductor 3.6 (BiocInstaller 1.28.0), R 3.4.1 (2017-06-30).
+## Installing package(s) 'EBImage'
+## 
+## The downloaded binary packages are in
+##  /var/folders/xg/p_v17x4s1wvc7jkj9m_f33dc0000gn/T//RtmpjRrgsx/downloaded_packages
+## Old packages: 'caTools', 'foreign', 'fpc', 'plotly', 'robustbase',
+##   'stringi', 'trimcluster'
+library(EBImage)
+## Warning: package 'EBImage' was built under R version 3.4.3
+library(keras)
+## Warning: package 'keras' was built under R version 3.4.4
+## 
+## Attaching package: 'keras'
+## The following object is masked from 'package:EBImage':
+## 
+##     normalize
+#Read Images
+setwd("~/Desktop/DATASET/data/amit/")
+pics<-c('amit.0.jpg','amit.1.jpg','amit.2.jpg','amit.3.jpg','amit.4.jpg','amit.5.jpg',
+'lucy.0.jpg','lucy.1.jpg', 'lucy.2.jpg','lucy.3.jpg','lucy.4.jpg','lucy.5.jpg')
+ourpic<-list()
+for ( i in 1:12) {ourpic[[i]]<-readImage(pics[i])}
+print(ourpic[[1]])
+## Image 
+##   colorMode    : Color 
+##   storage.mode : double 
+##   dim          : 385 327 3 
+##   frames.total : 3 
+##   frames.render: 1 
+## 
+## imageData(object)[1:5,1:6,1]
+##            [,1]       [,2]       [,3]       [,4]       [,5]       [,6]
+## [1,] 0.22352941 0.27058824 0.14509804 0.04705882 0.01568627 0.04313725
+## [2,] 0.17254902 0.16078431 0.03529412 0.03137255 0.08235294 0.25490196
+## [3,] 0.05882353 0.04313725 0.01568627 0.04313725 0.21568627 0.28627451
+## [4,] 0.01176471 0.01176471 0.08235294 0.23921569 0.29803922 0.24705882
+## [5,] 0.01960784 0.09803922 0.37647059 0.45490196 0.48235294 0.37254902
+display(ourpic[[1]])
+
+
+summary(ourpic[[2]])
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.0000  0.3098  0.5451  0.5042  0.6902  1.0000
+hist(ourpic[[6]])
+
+
+str(ourpic)
+## List of 12
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:385, 1:327, 1:3] 0.2235 0.1725 0.0588 0.0118 0.0196 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:278, 1:400, 1:3] 0.671 0.627 0.584 0.541 0.588 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:374, 1:336, 1:3] 0.1412 0.0941 0.0471 0.102 0.0549 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:200, 1:200, 1:3] 0.604 0.604 0.604 0.608 0.616 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:200, 1:200, 1:3] 0.537 0.541 0.545 0.545 0.525 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:200, 1:200, 1:3] 0.835 0.835 0.835 0.835 0.835 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:349, 1:326, 1:3] 0.0627 0.0627 0.0627 0.0627 0.0627 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:4032, 1:3024, 1:3] 0.357 0.357 0.361 0.365 0.365 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:960, 1:1280, 1:3] 1 1 1 1 1 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:4032, 1:3024, 1:3] 0.706 0.706 0.71 0.71 0.706 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:3088, 1:2320, 1:3] 0.996 0.996 0.996 0.996 0.996 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:4032, 1:3024, 1:3] 0.863 0.855 0.851 0.855 0.863 ...
+##   .. ..@ colormode: int 2
+#resizing the image
+for (i in 1:12) {ourpic[[i]]<-resize(ourpic[[i]],28,28)}
+str(ourpic)
+## List of 12
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:28, 1:28, 1:3] 0.9949 0.0739 0.3946 0.0313 0.33 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:28, 1:28, 1:3] 0.608 0.919 1 0.959 0.607 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:28, 1:28, 1:3] 0.0633 0.0486 0.2331 0.5387 0.2372 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:28, 1:28, 1:3] 0.628 0.579 0.615 0.6 0.638 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:28, 1:28, 1:3] 0.531 0.505 0.372 0.343 0.337 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:28, 1:28, 1:3] 0.835 0.835 0.835 0.839 0.839 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:28, 1:28, 1:3] 0.0627 0.0627 0.0627 0.0627 0.0627 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:28, 1:28, 1:3] 0.586 0.998 0.88 0.786 0.757 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:28, 1:28, 1:3] 1 0.995 0.992 0.992 0.992 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:28, 1:28, 1:3] 0.703 0.256 0.275 0.848 0.756 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:28, 1:28, 1:3] 1 0.992 1 1 0.665 ...
+##   .. ..@ colormode: int 2
+##  $ :Formal class 'Image' [package "EBImage"] with 2 slots
+##   .. ..@ .Data    : num [1:28, 1:28, 1:3] 0.837 0.82 0.804 0.814 0.78 ...
+##   .. ..@ colormode: int 2
+#reshape 
+for (i in 1:12) {ourpic[[i]]<-array_reshape(ourpic[[i]],c(28,28,3))}
+str(ourpic)
+## List of 12
+##  $ : num [1:28, 1:28, 1:3] 0.9949 0.0739 0.3946 0.0313 0.33 ...
+##  $ : num [1:28, 1:28, 1:3] 0.608 0.919 1 0.959 0.607 ...
+##  $ : num [1:28, 1:28, 1:3] 0.0633 0.0486 0.2331 0.5387 0.2372 ...
+##  $ : num [1:28, 1:28, 1:3] 0.628 0.579 0.615 0.6 0.638 ...
+##  $ : num [1:28, 1:28, 1:3] 0.531 0.505 0.372 0.343 0.337 ...
+##  $ : num [1:28, 1:28, 1:3] 0.835 0.835 0.835 0.839 0.839 ...
+##  $ : num [1:28, 1:28, 1:3] 0.0627 0.0627 0.0627 0.0627 0.0627 ...
+##  $ : num [1:28, 1:28, 1:3] 0.586 0.998 0.88 0.786 0.757 ...
+##  $ : num [1:28, 1:28, 1:3] 1 0.995 0.992 0.992 0.992 ...
+##  $ : num [1:28, 1:28, 1:3] 0.703 0.256 0.275 0.848 0.756 ...
+##  $ : num [1:28, 1:28, 1:3] 1 0.992 1 1 0.665 ...
+##  $ : num [1:28, 1:28, 1:3] 0.837 0.82 0.804 0.814 0.78 ...
+#Row Bind
+trainx<-NULL
+for (i in 1:5) {trainx<-rbind(trainx,ourpic[[i]])}
+str(trainx)
+##  num [1:5, 1:2352] 0.9949 0.6081 0.0633 0.6283 0.5308 ...
+for (i in 7:11) {trainx<-rbind(trainx,ourpic[[i]])}
+str(trainx)
+##  num [1:10, 1:2352] 0.9949 0.6081 0.0633 0.6283 0.5308 ...
+testx<-rbind(ourpic[[6]],ourpic[[12]])
+trainy<-c(0,0,0,0,0,1,1,1,1,1)
+testy<-c(0,1)
+#one hot encoding
+trainlabel<-to_categorical(trainy)
+testlabel<-to_categorical(testy)
+trainlabel
+##       [,1] [,2]
+##  [1,]    1    0
+##  [2,]    1    0
+##  [3,]    1    0
+##  [4,]    1    0
+##  [5,]    1    0
+##  [6,]    0    1
+##  [7,]    0    1
+##  [8,]    0    1
+##  [9,]    0    1
+## [10,]    0    1
+testlabel
+##      [,1] [,2]
+## [1,]    1    0
+## [2,]    0    1
+#model
+model<-keras_model_sequential()
+model %>%
+   layer_dense(units=256,activation='relu',input_shape=c(2352)) %>%
+   layer_dense(units=128,activation='relu')%>%
+   layer_dense(units=2,activation='softmax')
+summary(model)
+## ___________________________________________________________________________
+## Layer (type)                     Output Shape                  Param #     
+## ===========================================================================
+## dense_1 (Dense)                  (None, 256)                   602368      
+## ___________________________________________________________________________
+## dense_2 (Dense)                  (None, 128)                   32896       
+## ___________________________________________________________________________
+## dense_3 (Dense)                  (None, 2)                     258         
+## ===========================================================================
+## Total params: 635,522
+## Trainable params: 635,522
+## Non-trainable params: 0
+## ___________________________________________________________________________
+model %>%
+   compile(loss='binary_crossentropy',
+           optimizer=optimizer_rmsprop(),
+           metrics=c('accuracy'))
+history<-model %>%
+   fit(trainx,
+       trainlabel,
+       epochs=30,
+       batch_size=32,
+       validation_split=0.2)
+plot(history)
+
+
+model %>%
+   evaluate(trainx,trainlabel)
+## $loss
+## [1] 0.1731277
+## 
+## $acc
+## [1] 0.9
+pred<-model %>%
+   predict_classes(trainx)
+table(Predicated=pred,Actual=trainy)
+##           Actual
+## Predicated 0 1
+##          0 5 1
+##          1 0 4
+prob<-model%>%
+   predict_proba(trainx)
+cbind(prob,Prected=pred,Actual=trainy)
+##                              Prected Actual
+##  [1,] 0.97065282 0.029347217       0      0
+##  [2,] 0.95203716 0.047962870       0      0
+##  [3,] 0.97327948 0.026720496       0      0
+##  [4,] 0.96288842 0.037111521       0      0
+##  [5,] 0.99630320 0.003696774       0      0
+##  [6,] 0.05559082 0.944409192       1      1
+##  [7,] 0.02322231 0.976777732       1      1
+##  [8,] 0.02457794 0.975422025       1      1
+##  [9,] 0.37761804 0.622381985       1      1
+## [10,] 0.63357282 0.366427183       0      1
+display(ourpic[[11]])
+## Only the first frame of the image stack is displayed.
+## To display all frames use 'all = TRUE'.
+
+
+model%>%
+   evaluate(testx,testlabel)
+## $loss
+## [1] 0.2212991
+## 
+## $acc
+## [1] 1
+pred<-model%>%
+   predict_classes(testx)
+pred
+## [1] 0 1
+table(Predicted=pred,Actual=testy)
+##          Actual
+## Predicted 0 1
+##         0 1 0
+##         1 0 1
+Including Plots
+You can also embed plots, for example:
+
+
+
+Note that the echo = FALSE parameter was added to the code chunk to prevent printing of the R code that generated the plot.
