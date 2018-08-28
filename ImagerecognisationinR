@@ -1,5 +1,9 @@
-I have posted my project on rpubs, In this project I was successfully able to classify and predict the mage
-correctly 
+I have posted my project on rpubs, In this project I was successfully able to classify and predict the image 
+correctly.
+Steps I took
+1 Took some of me and my wife's photos 
+2 Renamed them 
+
 http://rpubs.com/amitbhsingh/406342
 #installing EBImage package 
 source("https://bioconductor.org/biocLite.R")
