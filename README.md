@@ -3,4 +3,6 @@
 ### Steps: Renaming images to x and y. Total 6 images of x and 6 of y for training model. 
 ### [Here you can see the project on Rpubs](http://rpubs.com/amitbhsingh/406342)
 ### This project is inspired from the youtube video hosted by Bharatendra Rai
-# _Result: Using RNN I was able to predict with 100 percent accuracy._ 
+# _Result: Using RNN I was able to predict with 100 percent accuracy. Although the model is trained with only 12 images._ 
+### Future work: I will try to make a model with with 1000 images with 3 label.
+
